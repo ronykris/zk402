@@ -1,0 +1,17 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/zk402-core",
+    "crates/zk402-groth16",
+    "crates/zk402-prover",
+    "crates/zk402-facilitator",
+    "crates/zk402-facilitator-http",
+    "crates/zk402-wasm",
+]
+
+[workspace.package]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/zk402/zk402"
+rust-version = "1.80"
+

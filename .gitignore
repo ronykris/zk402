@@ -1,0 +1,33 @@
+# Rust
+/target/
+
+# Foundry
+contracts/out/
+contracts/cache/
+contracts/broadcast/
+contracts/lib/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs and local reports
+*.log
+coverage/
+lcov.info
+
+# Editor and OS noise
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+zk402*.md
