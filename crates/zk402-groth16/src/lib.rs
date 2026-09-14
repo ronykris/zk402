@@ -221,6 +221,63 @@ fn serialize_compressed<T: CanonicalSerialize>(value: &T) -> Result<Vec<u8>> {
     Ok(bytes)
 }
 
+// ProofSystem trait implementation for zk402-core integration
+pub mod proof_system {
+    use super::*;
+    use zk402_core::{ProofSystem, ProofSystemError, PublicInputs, Witness};
+
+    pub struct Groth16ProofSystem;
+
+    impl ProofSystem for Groth16ProofSystem {
+        type ProvingKey = Vec<u8>;
+        type VerifyingKey = Vec<u8>;
+
+        fn prove(
+            pk: &Self::ProvingKey,
+            witness: &Witness,
+            public_inputs: &PublicInputs,
+        ) -> core::result::Result<Vec<u8>, ProofSystemError> {
+            let message = construct_message(public_inputs);
+            let mut rng = ark_std::rand::thread_rng();
+
+            super::prove(
+                pk,
+                &witness.secret_key,
+                &message,
+                &witness.nonce_scalar,
+                &mut rng,
+            )
+            .map_err(|e| ProofSystemError::ProvingFailed(e.to_string()))
+        }
+
+        fn verify(
+            vk: &Self::VerifyingKey,
+            proof: &[u8],
+            public_inputs: &PublicInputs,
+        ) -> core::result::Result<bool, ProofSystemError> {
+            let message = construct_message(public_inputs);
+
+            super::verify(vk, proof, &public_inputs.public_key, &message)
+                .map_err(|e| ProofSystemError::VerificationFailed(e.to_string()))
+        }
+    }
+
+    fn construct_message(inputs: &PublicInputs) -> Vec<u8> {
+        // Construct message from payment parameters following Phase 1 approach
+        let mut message = Vec::new();
+        message.extend_from_slice(b"zk402.payment.v1:");
+        message.extend_from_slice(inputs.from.as_slice());
+        message.extend_from_slice(inputs.pay_to.as_slice());
+        message.extend_from_slice(inputs.amount.as_bytes());
+        message.extend_from_slice(inputs.asset.as_slice());
+        message.extend_from_slice(inputs.network.as_bytes());
+        message.extend_from_slice(&inputs.nonce);
+        message.extend_from_slice(&inputs.valid_after.to_le_bytes());
+        message.extend_from_slice(&inputs.valid_before.to_le_bytes());
+        message
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

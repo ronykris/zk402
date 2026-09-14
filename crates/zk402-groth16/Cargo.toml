@@ -10,6 +10,7 @@ rust-version.workspace = true
 path = "src/lib.rs"
 
 [dependencies]
+zk402-core = { path = "../zk402-core" }
 ark-bls12-381 = "0.4"
 ark-crypto-primitives = { version = "0.4", features = ["crh", "r1cs", "signature"] }
 ark-ec = "0.4"
