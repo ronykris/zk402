@@ -9,3 +9,20 @@ rust-version.workspace = true
 [lib]
 path = "src/lib.rs"
 
+[[bin]]
+name = "zk402-facilitator-http"
+path = "src/main.rs"
+
+[dependencies]
+zk402-core = { path = "../zk402-core" }
+zk402-facilitator = { path = "../zk402-facilitator" }
+zk402-groth16 = { path = "../zk402-groth16" }
+axum = "0.7"
+tokio = { version = "1", features = ["full"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors", "trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
