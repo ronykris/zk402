@@ -9,6 +9,7 @@ rust-version.workspace = true
 keywords = ["zero-knowledge", "payments", "facilitator", "verification", "ethereum"]
 categories = ["cryptography", "web-programming"]
 readme = "README.md"
+include = ["src/**/*", "README.md", "ZkSettleVerifier.abi.json"]
 
 [lib]
 path = "src/lib.rs"

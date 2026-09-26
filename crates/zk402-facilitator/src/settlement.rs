@@ -11,7 +11,7 @@ use zk402_core::{
 
 abigen!(
     ZkSettleVerifier,
-    "$CARGO_MANIFEST_DIR/../../ZkSettleVerifier.abi.json"
+    "$CARGO_MANIFEST_DIR/ZkSettleVerifier.abi.json"
 );
 
 /// Configuration for on-chain settlement
