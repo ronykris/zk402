@@ -7,6 +7,9 @@ use std::collections::HashMap;
 use std::time::{SystemTime, UNIX_EPOCH};
 use zk402_core::*;
 
+pub mod settlement;
+pub use settlement::SettlementConfig;
+
 /// Static verifying key registry loaded from configuration.
 pub struct StaticRegistry<VK> {
     keys: HashMap<(String, String), VK>,
@@ -47,6 +50,7 @@ impl<VK: Clone> VerifyingKeyRegistry for StaticRegistry<VK> {
 /// zk402 facilitator implementing the Scheme trait.
 pub struct ZkSettleFacilitator<PS: ProofSystem, VKR: VerifyingKeyRegistry> {
     registry: VKR,
+    settlement_config: Option<SettlementConfig>,
     _phantom: std::marker::PhantomData<PS>,
 }
 
@@ -56,8 +60,14 @@ impl<PS: ProofSystem, VKR: VerifyingKeyRegistry<VerifyingKeyHandle = PS::Verifyi
     pub fn new(registry: VKR) -> Self {
         Self {
             registry,
+            settlement_config: None,
             _phantom: std::marker::PhantomData,
         }
+    }
+
+    pub fn with_settlement(mut self, config: SettlementConfig) -> Self {
+        self.settlement_config = Some(config);
+        self
     }
 
     /// Step 1: Structural match validation
@@ -173,14 +183,25 @@ impl<PS: ProofSystem + Send + Sync, VKR: VerifyingKeyRegistry<VerifyingKeyHandle
     async fn settle(
         &self,
         _req: &PaymentRequirements,
-        _payload: &PaymentPayload,
+        payload: &PaymentPayload,
     ) -> Result<SettleResponse, SchemeError> {
-        // Stubbed for Phase 3 - will be implemented in Phase 3.5
-        Ok(SettleResponse {
-            success: true,
-            tx_hash: Some("0x0000000000000000000000000000000000000000000000000000000000000000".to_string()),
-            error: None,
-        })
+        let config = self
+            .settlement_config
+            .as_ref()
+            .ok_or_else(|| SchemeError::Internal("settlement not configured".to_string()))?;
+
+        match settlement::submit_settlement(config, payload).await {
+            Ok(tx_hash) => Ok(SettleResponse {
+                success: true,
+                tx_hash: Some(tx_hash),
+                error: None,
+            }),
+            Err(e) => Ok(SettleResponse {
+                success: false,
+                tx_hash: None,
+                error: Some(e.to_string()),
+            }),
+        }
     }
 }
 
