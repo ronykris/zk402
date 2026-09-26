@@ -9,3 +9,8 @@ rust-version.workspace = true
 [lib]
 path = "src/lib.rs"
 
+[dependencies]
+zk402-core = { path = "../zk402-core" }
+zk402-groth16 = { path = "../zk402-groth16" }
+rand = "0.8"
+
