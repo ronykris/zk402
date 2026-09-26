@@ -280,7 +280,6 @@ pub mod proof_system {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use ark_std::rand::{rngs::StdRng, SeedableRng};
     use std::sync::OnceLock;
 

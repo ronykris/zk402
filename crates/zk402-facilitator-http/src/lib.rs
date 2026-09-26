@@ -9,10 +9,10 @@ use axum::{
     routing::post,
     Json, Router,
 };
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use std::sync::Arc;
 use zk402_core::*;
-use zk402_facilitator::{StaticRegistry, ZkSettleFacilitator};
+use zk402_facilitator::ZkSettleFacilitator;
 
 /// HTTP request for POST /verify
 #[derive(Debug, Deserialize)]

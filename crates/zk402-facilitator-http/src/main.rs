@@ -20,7 +20,7 @@ async fn main() {
         .init();
 
     // Create a static registry (in production, load from config)
-    let mut registry = StaticRegistry::new();
+    let registry = StaticRegistry::new();
 
     // TODO: Load verifying keys from configuration
     // For now, this is an empty registry - would need setup() from zk402-groth16

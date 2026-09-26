@@ -2,7 +2,6 @@
 //!
 //! Takes private witness + PaymentRequirements, generates proof, assembles PaymentPayload.
 
-use rand::thread_rng;
 use zk402_core::*;
 use zk402_groth16::proof_system::Groth16ProofSystem;
 
