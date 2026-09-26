@@ -2,26 +2,16 @@
 
 use ethers::{
     prelude::*,
-    types::{Address as EthAddress, Bytes, H256, U256},
+    types::{Address as EthAddress, Bytes, U256},
 };
 use std::sync::Arc;
-use zk402_core::*;
+use zk402_core::{
+    PaymentPayload, PublicInputs as CorePublicInputs, SchemeError,
+};
 
 abigen!(
     ZkSettleVerifier,
-    r#"[
-        struct PublicInputs {
-            uint256 amount;
-            address asset;
-            address payTo;
-            address from;
-            string network;
-            bytes32 nonce;
-            uint64 validAfter;
-            uint64 validBefore;
-        }
-        function settle(bytes calldata proof, PublicInputs calldata inputs) external
-    ]"#
+    "$CARGO_MANIFEST_DIR/../../ZkSettleVerifier.abi.json"
 );
 
 /// Configuration for on-chain settlement
@@ -71,18 +61,16 @@ pub async fn submit_settlement(
     let verifier_address = EthAddress::from_slice(&config.verifier_address);
     let contract = ZkSettleVerifier::new(verifier_address, client);
 
-    // Convert PublicInputs to Solidity format
-    let inputs = convert_public_inputs(&payload.public_inputs)?;
+    // Convert PublicInputs to Solidity tuple format
+    let inputs_tuple = convert_public_inputs(&payload.public_inputs)?;
     let proof = Bytes::from(payload.proof.clone());
 
-    // Submit transaction
-    let tx = contract
-        .settle(proof, inputs)
+    // Submit transaction and await receipt
+    let receipt = contract
+        .settle(proof, inputs_tuple)
         .send()
         .await
-        .map_err(|e| SchemeError::ChainError(format!("transaction failed: {}", e)))?;
-
-    let receipt = tx
+        .map_err(|e| SchemeError::ChainError(format!("transaction failed: {}", e)))?
         .await
         .map_err(|e| SchemeError::ChainError(format!("failed to get receipt: {}", e)))?
         .ok_or_else(|| SchemeError::ChainError("transaction receipt not found".to_string()))?;
@@ -91,20 +79,20 @@ pub async fn submit_settlement(
 }
 
 fn convert_public_inputs(
-    inputs: &PublicInputs,
-) -> Result<self::PublicInputs, SchemeError> {
+    inputs: &CorePublicInputs,
+) -> Result<PublicInputs, SchemeError> {
     let amount = inputs
         .amount
         .parse::<U256>()
         .map_err(|e| SchemeError::Internal(format!("invalid amount: {}", e)))?;
 
-    Ok(self::PublicInputs {
+    Ok(PublicInputs {
         amount,
         asset: EthAddress::from_slice(&inputs.asset),
         pay_to: EthAddress::from_slice(&inputs.pay_to),
         from: EthAddress::from_slice(&inputs.from),
         network: inputs.network.clone(),
-        nonce: H256::from_slice(&inputs.nonce),
+        nonce: inputs.nonce,
         valid_after: inputs.valid_after,
         valid_before: inputs.valid_before,
     })
@@ -116,7 +104,7 @@ mod tests {
 
     #[test]
     fn converts_public_inputs_correctly() {
-        let inputs = PublicInputs {
+        let inputs = CorePublicInputs {
             amount: "100".to_string(),
             asset: [1u8; 20],
             pay_to: [2u8; 20],

@@ -1,10 +1,14 @@
 [package]
 name = "zk402-facilitator-http"
-version = "0.0.0"
+version = "0.1.0"
+description = "HTTP/REST API service for zk402 payment verification and settlement"
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+keywords = ["zero-knowledge", "payments", "http", "rest-api", "server"]
+categories = ["cryptography", "web-programming"]
+readme = "README.md"
 
 [lib]
 path = "src/lib.rs"
@@ -14,9 +18,9 @@ name = "zk402-facilitator-http"
 path = "src/main.rs"
 
 [dependencies]
-zk402-core = { path = "../zk402-core" }
-zk402-facilitator = { path = "../zk402-facilitator" }
-zk402-groth16 = { path = "../zk402-groth16" }
+zk402-core = { version = "0.1.0", path = "../zk402-core" }
+zk402-facilitator = { version = "0.1.0", path = "../zk402-facilitator" }
+zk402-groth16 = { version = "0.1.0", path = "../zk402-groth16" }
 axum = "0.7"
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1", features = ["derive"] }

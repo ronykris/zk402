@@ -1,0 +1,158 @@
+[
+  {
+    "type": "constructor",
+    "inputs": [
+      {
+        "name": "proofVerifier_",
+        "type": "address",
+        "internalType": "contract IProofVerifier"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "consumedNonces",
+    "inputs": [
+      {
+        "name": "nonce",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "consumed",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "proofVerifier",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract IProofVerifier"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "settle",
+    "inputs": [
+      {
+        "name": "proof",
+        "type": "bytes",
+        "internalType": "bytes"
+      },
+      {
+        "name": "inputs",
+        "type": "tuple",
+        "internalType": "struct IProofVerifier.PublicInputs",
+        "components": [
+          {
+            "name": "amount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "asset",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "payTo",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "from",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "network",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "nonce",
+            "type": "bytes32",
+            "internalType": "bytes32"
+          },
+          {
+            "name": "validAfter",
+            "type": "uint64",
+            "internalType": "uint64"
+          },
+          {
+            "name": "validBefore",
+            "type": "uint64",
+            "internalType": "uint64"
+          }
+        ]
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "error",
+    "name": "InvalidProof",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NonceReused",
+    "inputs": [
+      {
+        "name": "nonce",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "PaymentExpired",
+    "inputs": [
+      {
+        "name": "validBefore",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "currentTimestamp",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "PaymentNotYetValid",
+    "inputs": [
+      {
+        "name": "validAfter",
+        "type": "uint64",
+        "internalType": "uint64"
+      },
+      {
+        "name": "currentTimestamp",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ]
+  },
+  {
+    "type": "error",
+    "name": "TransferFailed",
+    "inputs": []
+  }
+]

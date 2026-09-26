@@ -1,16 +1,20 @@
 [package]
 name = "zk402-prover"
-version = "0.0.0"
+version = "0.1.0"
+description = "Client-side proof generation for zk402 zero-knowledge payments"
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+keywords = ["zero-knowledge", "payments", "client", "prover", "zk-snark"]
+categories = ["cryptography"]
+readme = "README.md"
 
 [lib]
 path = "src/lib.rs"
 
 [dependencies]
-zk402-core = { path = "../zk402-core" }
-zk402-groth16 = { path = "../zk402-groth16" }
+zk402-core = { version = "0.1.0", path = "../zk402-core" }
+zk402-groth16 = { version = "0.1.0", path = "../zk402-groth16" }
 rand = "0.8"
 

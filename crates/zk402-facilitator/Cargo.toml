@@ -1,16 +1,20 @@
 [package]
 name = "zk402-facilitator"
-version = "0.0.0"
+version = "0.1.0"
+description = "Facilitator implementation for verifying and settling zk402 payments"
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+keywords = ["zero-knowledge", "payments", "facilitator", "verification", "ethereum"]
+categories = ["cryptography", "web-programming"]
+readme = "README.md"
 
 [lib]
 path = "src/lib.rs"
 
 [dependencies]
-zk402-core = { path = "../zk402-core" }
+zk402-core = { version = "0.1.0", path = "../zk402-core" }
 async-trait = "0.1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

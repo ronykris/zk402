@@ -1,18 +1,22 @@
 [package]
 name = "zk402-wasm"
-version = "0.0.0"
+version = "0.1.0"
+description = "WebAssembly bindings for zk402 client-side proof generation"
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
 rust-version.workspace = true
+keywords = ["zero-knowledge", "payments", "wasm", "browser", "webassembly"]
+categories = ["cryptography", "wasm"]
+readme = "README.md"
 
 [lib]
 path = "src/lib.rs"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-zk402-core = { path = "../zk402-core" }
-zk402-prover = { path = "../zk402-prover" }
+zk402-core = { version = "0.1.0", path = "../zk402-core" }
+zk402-prover = { version = "0.1.0", path = "../zk402-prover" }
 wasm-bindgen = "0.2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

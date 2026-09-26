@@ -1,5 +1,7 @@
 # Rust
 /target/
+examples/**/target/
+examples/**/Cargo.lock
 
 # Foundry
 contracts/out/
@@ -31,3 +33,4 @@ temp/
 *.tmp
 
 zk402*.md
+*.o
