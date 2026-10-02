@@ -1,6 +1,6 @@
 # zk402
 
-A standalone Rust implementation of a zero-knowledge payment settlement scheme, enabling privacy-preserving payment authorization via SNARKs.
+A standalone Rust implementation of a zero-knowledge Agentic AI payment settlement scheme, enabling privacy-preserving payment authorization via SNARKs.
 
 ## Overview
 
@@ -196,41 +196,12 @@ cargo clippy --all-targets --all-features
 cd contracts && forge fmt && forge check
 ```
 
-### Documentation
-
-```bash
-# Build Rust docs
-cargo doc --open --no-deps
-
-# Build Solidity docs
-cd contracts && forge doc
-```
-
 ## Use Cases
 
 - **Confidential payments** - Authorize transfers without exposing signatures
 - **Batched authorizations** - Single proof for multiple payment checks
 - **Custom predicates** - Extend circuits for balance checks, allowlists, etc.
 - **Cross-chain settlement** - ZK proofs as portable payment authorizations
-
-## Roadmap
-
-### v1.0 (Current)
-
-- ✅ Groth16 proof system
-- ✅ EdDSA signature circuit
-- ✅ HTTP facilitator service
-- ✅ WASM browser bindings
-- ✅ EVM settlement contracts
-- ✅ Static verifying key registry
-
-### Future
-
-- Halo2 proof system backend
-- Signer identity privacy (anonymity sets)
-- On-chain verifying key registry
-- Balance sufficiency predicates
-- Multi-chain settlement support
 
 ## Contributing
 
@@ -248,11 +219,6 @@ This is experimental software. Use at your own risk.
 
 For security issues, please contact: security@zk402.org (or file a private security advisory)
 
-### Audit Status
-
-- **Code audit**: Not yet audited
-- **Smart contracts**: Not yet audited
-- **Trusted setup**: Test parameters only (DO NOT use in production)
 
 ## License
 
