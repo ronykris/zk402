@@ -4623,7 +4623,7 @@ dependencies = [
 
 [[package]]
 name = "zk402-core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "hex",
@@ -4633,7 +4633,7 @@ dependencies = [
 
 [[package]]
 name = "zk402-facilitator"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "async-trait",
  "ethers",
@@ -4646,7 +4646,7 @@ dependencies = [
 
 [[package]]
 name = "zk402-facilitator-http"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "axum",
  "serde",
@@ -4663,7 +4663,7 @@ dependencies = [
 
 [[package]]
 name = "zk402-groth16"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "ark-bls12-381",
  "ark-crypto-primitives",
@@ -4684,7 +4684,7 @@ dependencies = [
 
 [[package]]
 name = "zk402-prover"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "rand 0.8.8",
  "zk402-core",

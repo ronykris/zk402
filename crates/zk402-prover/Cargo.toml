@@ -1,6 +1,6 @@
 [package]
 name = "zk402-prover"
-version = "0.1.0"
+version = "0.1.1"
 description = "Client-side proof generation for zk402 zero-knowledge payments"
 edition.workspace = true
 license.workspace = true

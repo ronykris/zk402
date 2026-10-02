@@ -1,6 +1,6 @@
 [package]
 name = "zk402-groth16"
-version = "0.1.0"
+version = "0.1.1"
 description = "Groth16 proof system implementation for zk402 using arkworks"
 edition.workspace = true
 license.workspace = true
