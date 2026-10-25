@@ -68,6 +68,7 @@ cargo run --release --bin zk402-facilitator-http
 ```
 
 The service will start on `http://localhost:3000` with endpoints:
+
 - `POST /verify` - Verify a zero-knowledge payment proof
 - `POST /settle` - Settle a verified payment on-chain
 - `GET /health` - Health check
@@ -75,19 +76,19 @@ The service will start on `http://localhost:3000` with endpoints:
 ### Generate a Proof (Browser)
 
 ```typescript
-import init, { build_payload } from 'zk402-wasm';
+import init, { build_payload } from "zk402-wasm";
 
 await init();
 
 const payload = build_payload(
   JSON.stringify(requirements),
-  JSON.stringify(witness)
+  JSON.stringify(witness),
 );
 
 // Send to facilitator
-const response = await fetch('http://localhost:3000/verify', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
+const response = await fetch("http://localhost:3000/verify", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
   body: JSON.stringify({ requirements, payload: JSON.parse(payload) }),
 });
 ```
@@ -219,15 +220,12 @@ This is experimental software. Use at your own risk.
 
 For security issues, please contact: security@zk402.org (or file a private security advisory)
 
-
 ## License
 
 Licensed under either of:
 
 - Apache License, Version 2.0 ([LICENSE-APACHE](LICENSE-APACHE))
 - MIT License ([LICENSE-MIT](LICENSE-MIT))
-
-at your option.
 
 ## Resources
 

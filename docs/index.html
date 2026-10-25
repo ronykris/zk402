@@ -1,0 +1,314 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>zk402 — Zero-Knowledge Settlement for x402</title>
+<meta name="description" content="A standalone Rust implementation of zero-knowledge proof-based payment settlement for the x402 protocol, verified against a circuit instead of a recovered signature.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #10131F;
+    --ink-raised: #171B2C;
+    --paper: #F4F2EC;
+    --slate: #9CA0B4;
+    --line: #2A2F45;
+    --brass: #C9972B;
+    --brass-dim: #8A6A22;
+    --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+  body {
+    margin: 0;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--brass); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; }
+
+  .wrap { max-width: 840px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---- nav ---- */
+  header {
+    position: sticky; top: 0; top: env(safe-area-inset-top, 0px);
+    z-index: 10;
+    background: rgba(16, 19, 31, 0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav.wrap {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 18px; padding-bottom: 18px;
+  }
+  .brand {
+    font-family: var(--font-mono);
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--paper);
+    letter-spacing: -0.01em;
+  }
+  .brand:hover { text-decoration: none; color: var(--brass); }
+  .navlinks { display: flex; gap: 28px; align-items: center; }
+  .navlinks a { color: var(--slate); font-size: 0.95rem; }
+  .navlinks a:hover { color: var(--paper); text-decoration: none; }
+  .navlinks a.gh { color: var(--paper); border: 1px solid var(--line); padding: 7px 14px; border-radius: 4px; }
+  .navlinks a.gh:hover { border-color: var(--brass); color: var(--brass); }
+  .menu-btn { display: none; background: none; border: 1px solid var(--line); color: var(--paper); padding: 8px 10px; border-radius: 4px; font-family: var(--font-mono); }
+
+  /* ---- trace line structure ---- */
+  .traced { position: relative; padding-left: 28px; }
+  .traced::before {
+    content: "";
+    position: absolute; left: 0; top: 6px; bottom: 6px;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--brass) 0%, var(--line) 85%);
+  }
+
+  section { padding: 64px 0; border-bottom: 1px solid var(--line); }
+  section:last-of-type { border-bottom: none; }
+
+  h1, h2, h3 { font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  h1 { font-size: clamp(2rem, 5vw, 2.75rem); line-height: 1.15; max-width: 16ch; }
+  h2 { font-size: 1.5rem; margin-bottom: 28px; }
+  p { margin: 0; color: var(--paper); }
+  .lede { color: var(--slate); font-size: 1.05rem; max-width: 62ch; margin-top: 18px; }
+
+  code, .mono { font-family: var(--font-mono); }
+
+  /* ---- hero ---- */
+  .hero { padding-top: 72px; }
+  .status-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-mono); font-size: 0.82rem; color: var(--slate);
+    border: 1px solid var(--line); border-radius: 100px;
+    padding: 6px 14px; margin-bottom: 24px;
+  }
+  .status-chip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brass); }
+
+  .cta-row { display: flex; gap: 14px; margin-top: 32px; flex-wrap: wrap; }
+  .btn {
+    display: inline-block; font-size: 0.95rem; font-weight: 500;
+    padding: 11px 20px; border-radius: 4px;
+    border: 1px solid var(--line);
+  }
+  .btn:hover { text-decoration: none; }
+  .btn-primary { background: var(--brass); border-color: var(--brass); color: var(--ink); }
+  .btn-primary:hover { background: #dba942; }
+  .btn-ghost { color: var(--paper); }
+  .btn-ghost:hover { border-color: var(--brass); color: var(--brass); }
+
+  /* ---- how it works ---- */
+  .step { display: flex; gap: 20px; padding: 22px 0; border-top: 1px solid var(--line); }
+  .step:first-of-type { border-top: none; }
+  .step-num {
+    font-family: var(--font-mono); font-size: 0.85rem; color: var(--brass);
+    flex-shrink: 0; width: 2ch; padding-top: 3px;
+  }
+  .step-body h3 { font-size: 1.05rem; margin-bottom: 6px; }
+  .step-body p { color: var(--slate); font-size: 0.97rem; }
+
+  /* ---- why block ---- */
+  .why-row { padding: 20px 0; border-top: 1px solid var(--line); }
+  .why-row:first-of-type { border-top: none; }
+  .why-row h3 { font-size: 1rem; margin-bottom: 6px; }
+  .why-row p { color: var(--slate); font-size: 0.95rem; max-width: 60ch; }
+
+  /* ---- crates ---- */
+  .crate-row {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 16px;
+    padding: 18px 0; border-top: 1px solid var(--line); flex-wrap: wrap;
+  }
+  .crate-row:first-of-type { border-top: none; }
+  .crate-name { font-family: var(--font-mono); font-size: 0.95rem; color: var(--paper); }
+  .crate-desc { color: var(--slate); font-size: 0.92rem; flex: 1 1 320px; }
+  .crate-links { display: flex; gap: 14px; font-size: 0.85rem; font-family: var(--font-mono); white-space: nowrap; }
+
+  footer { padding: 40px 0 calc(40px + env(safe-area-inset-bottom, 0px)); }
+  footer .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+  footer p { color: var(--slate); font-size: 0.85rem; }
+  footer .flinks { display: flex; gap: 20px; }
+  footer .flinks a { color: var(--slate); font-size: 0.85rem; }
+  footer .flinks a:hover { color: var(--brass); text-decoration: none; }
+
+  @media (max-width: 680px) {
+    .navlinks { display: none; }
+    .menu-btn { display: inline-block; }
+    section { padding: 44px 0; }
+    .traced { padding-left: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <a class="brand" href="#top">zk402</a>
+    <div class="navlinks">
+      <a href="#how">How it works</a>
+      <a href="#crates">Crates</a>
+      <a class="gh" href="https://github.com/ronykris/zk402">GitHub</a>
+    </div>
+    <button class="menu-btn" aria-label="Menu" onclick="document.getElementById('mobilenav').classList.toggle('open')">Menu</button>
+  </nav>
+  <div id="mobilenav" class="wrap" style="display:none; padding-bottom: 18px; flex-direction: column; gap: 14px;">
+    <a href="#how">How it works</a>
+    <a href="#crates">Crates</a>
+    <a href="https://github.com/ronykris/zk402">GitHub</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap">
+      <div class="status-chip"><span class="dot"></span>Independent, open-source Rust implementation</div>
+      <h1>Zero-knowledge settlement for x402</h1>
+      <p class="lede">
+        zk402 authorizes an x402 transfer with a cryptographic proof instead of a
+        recovered signature. Verified against a circuit, settled on-chain.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://github.com/ronykris/zk402">View on GitHub</a>
+        <a class="btn btn-ghost" href="#crates">Browse the crates</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <h2>How a payment settles</h2>
+      <div class="traced">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <h3>Client proves</h3>
+            <p>The payer runs a prover locally over their private inputs and produces a
+              <code class="mono">PaymentPayload</code> carrying a proof and its public inputs —
+              amount, asset, recipient, and a replay nonce.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <h3>Facilitator verifies</h3>
+            <p>The facilitator checks the public inputs against what was requested, confirms it
+              trusts the declared circuit, and verifies the proof — rejecting anything it can't
+              independently confirm.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <h3>Chain settles</h3>
+            <p>The facilitator submits the proof on-chain. One transaction re-verifies it,
+              consumes the nonce, and transfers funds — atomically, with no partial state.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="wrap">
+      <h2>Why a proof instead of a signature</h2>
+      <div class="why-row">
+        <h3>A different trust primitive</h3>
+        <p>x402's existing schemes authorize a transfer by recovering a signer from a
+          signature, or by simulating a trusted delegation. zk402 checks a proof against a
+          circuit-specific verifying key instead — a boundary that extends to predicates a
+          signature can't express.</p>
+      </div>
+      <div class="why-row">
+        <h3>No facilitator discretion</h3>
+        <p>Amount, asset, and recipient are bound into the proof's public inputs. A facilitator
+          can broadcast the transaction, but it cannot alter where funds go without invalidating
+          the proof.</p>
+      </div>
+      <div class="why-row">
+        <h3>Honest about scope</h3>
+        <p>This is a minimal reference implementation — verify and settle only, no policy or
+          budget logic. Public inputs are not hidden in this version; identity-hiding variants
+          are a larger, separate design.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="crates">
+    <div class="wrap">
+      <h2>The zk402 crate family</h2>
+      <div>
+        <div class="crate-row">
+          <span class="crate-name">zk402-core</span>
+          <span class="crate-desc">Wire types, the <code class="mono">Scheme</code> trait, and the
+            <code class="mono">ProofSystem</code> trait every other crate builds on. No crypto
+            dependencies.</span>
+          <span class="crate-links"><a href="https://docs.rs/zk402-core">docs.rs</a><a href="https://crates.io/crates/zk402-core">crates.io</a></span>
+        </div>
+        <div class="crate-row">
+          <span class="crate-name">zk402-groth16</span>
+          <span class="crate-desc">The v1 proving backend — a Groth16 circuit proving knowledge
+            of a valid transfer authorization.</span>
+          <span class="crate-links"><a href="https://docs.rs/zk402-groth16">docs.rs</a><a href="https://crates.io/crates/zk402-groth16">crates.io</a></span>
+        </div>
+        <div class="crate-row">
+          <span class="crate-name">zk402-prover</span>
+          <span class="crate-desc">Client-side: turns a witness and payment requirements into a
+            signed <code class="mono">PaymentPayload</code>.</span>
+          <span class="crate-links"><a href="https://docs.rs/zk402-prover">docs.rs</a><a href="https://crates.io/crates/zk402-prover">crates.io</a></span>
+        </div>
+        <div class="crate-row">
+          <span class="crate-name">zk402-facilitator</span>
+          <span class="crate-desc">The verify/settle pipeline and on-chain submission logic —
+            the core of a zk402 facilitator.</span>
+          <span class="crate-links"><a href="https://docs.rs/zk402-facilitator">docs.rs</a><a href="https://crates.io/crates/zk402-facilitator">crates.io</a></span>
+        </div>
+        <div class="crate-row">
+          <span class="crate-name">zk402-facilitator-http</span>
+          <span class="crate-desc">An axum service exposing <code class="mono">POST /verify</code>
+            and <code class="mono">POST /settle</code> over the standard x402 facilitator
+            contract.</span>
+          <span class="crate-links"><a href="https://docs.rs/zk402-facilitator-http">docs.rs</a><a href="https://crates.io/crates/zk402-facilitator-http">crates.io</a></span>
+        </div>
+        <div class="crate-row">
+          <span class="crate-name">zk402-wasm</span>
+          <span class="crate-desc">WASM bindings so browser and TypeScript clients can generate
+            proofs without a native port.</span>
+          <span class="crate-links"><a href="https://docs.rs/zk402-wasm">docs.rs</a><a href="https://crates.io/crates/zk402-wasm">crates.io</a></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>zk402 is not affiliated with the x402 Foundation or Coinbase. Independent, open-source implementation.</p>
+    <div class="flinks">
+      <a href="https://github.com/ronykris/zk402">GitHub</a>
+      <a href="https://github.com/ronykris/zk402#license">License</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
+
+</body></html>
